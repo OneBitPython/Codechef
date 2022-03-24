@@ -89,43 +89,13 @@ void output(vector<pair<T, W>> &arr){
         cout << x.first << " " << x.second << endl;
     }
 }
-
-
 void solve()
 {
     int n;
     cin >> n;
-    vector<int>a(n);
-    for(int i = 0;i<n;++i)cin >> a[i];
-    vector<int>l;
-    vector<int>lis_from_left(n);
-    for (int i = 0; i < n; ++i) {
-        auto pos = lower_bound(l.begin(), l.end(), a[i]);
-        if (pos == l.end()) {
-            l.push_back(a[i]);
-        } else {
-            *pos = a[i];
-        }
-        lis_from_left[i] = l.size();
-    }
-    // reverse(all(a));
-    vector<int>lis_from_right(n);
-    vector<int>g;
-    for (int i = n-1;i>=0;--i) {
-        auto pos = lower_bound(g.begin(), g.end(), -a[i]);
-        if (pos == g.end()) {
-            g.push_back(-a[i]);
-        } else {
-            *pos = -a[i];
-        }
-        lis_from_right[i] = g.size();
-    }
-    int ans = 0;
-    
-    for(int i = 1;i<n;++i){
-        ans = max(ans, lis_from_left[i-1]+lis_from_right[i]);
-    }
-    cout << ans << endl;
+    if(n%2==0){
+        cout << (n)/2 << endl;
+    }else cout << -((n+1)/2) << endl;
 }
 
 int32_t main()
