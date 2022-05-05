@@ -6,8 +6,6 @@ using namespace std;
 #define all(c) c.begin(), c.end()
 #define endl "\n"
 
-#define inf 1e18
-
 void __print(int x) {cerr << x;}
 void __print(long x) {cerr << x;}
 void __print(unsigned x) {cerr << x;}
@@ -71,43 +69,33 @@ string bin(long n){
 
 void solve()
 {
-    string s;
-    cin >> s;
-    int n = s.size();
-    vector<vector<pair<int,int>>> adj(n+1);
-    for(int i = 0;i<n;++i){
-        adj[i].pb({1,i+1});
-        adj[i+1].pb({1,i});
+    int n;
+    cin >> n;
+    vector<int>a(n);
+    int sum = 0;
+    for(int &u : a){
+      cin >> u;
+      sum+=u;
     }
-    
-    for(int i = 0;i<n;++i){
-        for(int j = i+1;j<n;++j){
-            if(s[i] == s[j]){
-                adj[i].pb({1, j});
-                adj[j].pb({1,i});
-            }
-        }
+    int N = n/2;
+    /*
+    O = final odd value
+    E = final even value
+    sum = sum of all elements
+    n = N/2
+
+    n*O = n*E = sum
+    n(O+E) = sum
+    O+E = sum/n
+    O+E is a an odd value so sum/n should be odd
+    */
+    if(sum%N!=0){
+      cout << "NO" << endl;
+      return;
     }
-    vector<bool>visited(n+1);
-    vector<int>costs(n+1, inf);
-    costs[0] = 0;
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
-    pq.push({0, 0});
-    while(!pq.empty()){
-        int u = pq.top().second;
-        pq.pop();
-        if(visited[u])continue;
-        visited[u] = 1;
-        for(auto v : adj[u]){
-            int curr_cost = costs[v.second];
-            int new_cost = costs[u]+v.first;
-            if(new_cost < curr_cost){
-                costs[v.second] = new_cost;
-                pq.push({new_cost, v.second});
-            }
-        }
-    }
-    cout << costs[n-1] << endl;
+    if((sum/N)&1){
+      cout << "YES" << endl;
+    }else cout << "NO" << endl;
 }   
 
 int32_t main()
@@ -123,8 +111,8 @@ int32_t main()
     
 
     int T=1;
-    // cin >> T;
-    while (T--)
+    cin >> T;
+    for(int i = 1;i<=T;++i)
     {
         solve();
     }

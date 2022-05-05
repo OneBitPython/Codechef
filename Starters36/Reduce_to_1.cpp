@@ -6,8 +6,6 @@ using namespace std;
 #define all(c) c.begin(), c.end()
 #define endl "\n"
 
-#define inf 1e18
-
 void __print(int x) {cerr << x;}
 void __print(long x) {cerr << x;}
 void __print(unsigned x) {cerr << x;}
@@ -67,47 +65,60 @@ string bin(long n){
 }
 
 
-
+long long g(long long n)
+{
+    long long maxPrime = -1;
+ 
+    while (n % 2 == 0) {
+        maxPrime = 2;
+        n >>= 1;
+    }
+     while (n % 3 == 0) {
+        maxPrime = 3;
+        n=n/3;
+    }
+ 
+    for (int i = 5; i <= sqrt(n); i += 6) {
+        while (n % i == 0) {
+            maxPrime = i;
+            n = n / i;
+        }
+      while (n % (i+2) == 0) {
+            maxPrime = i+2;
+            n = n / (i+2);
+        }
+    }
+ 
+    if (n > 4)
+        maxPrime = n;
+ 
+    return maxPrime;
+}
+ 
 
 void solve()
 {
-    string s;
-    cin >> s;
-    int n = s.size();
-    vector<vector<pair<int,int>>> adj(n+1);
-    for(int i = 0;i<n;++i){
-        adj[i].pb({1,i+1});
-        adj[i+1].pb({1,i});
+    int n;
+    cin >> n;
+    int cnt = 0;
+    if(n == 1){
+        cout << 0 << endl;
+        return;
     }
-    
-    for(int i = 0;i<n;++i){
-        for(int j = i+1;j<n;++j){
-            if(s[i] == s[j]){
-                adj[i].pb({1, j});
-                adj[j].pb({1,i});
-            }
+    while(n%2==0){
+        cnt++;
+        n/=2;
+    }
+    if(cnt == 0)cout << 1 << endl;
+    else{
+        if(cnt&1)cout << -1 << endl;
+        else{
+            int st = sqrtl(n);
+            if(st * st == n){
+                cout << 1 << endl;
+            }else cout << 2 << endl;
         }
     }
-    vector<bool>visited(n+1);
-    vector<int>costs(n+1, inf);
-    costs[0] = 0;
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
-    pq.push({0, 0});
-    while(!pq.empty()){
-        int u = pq.top().second;
-        pq.pop();
-        if(visited[u])continue;
-        visited[u] = 1;
-        for(auto v : adj[u]){
-            int curr_cost = costs[v.second];
-            int new_cost = costs[u]+v.first;
-            if(new_cost < curr_cost){
-                costs[v.second] = new_cost;
-                pq.push({new_cost, v.second});
-            }
-        }
-    }
-    cout << costs[n-1] << endl;
 }   
 
 int32_t main()
@@ -123,9 +134,10 @@ int32_t main()
     
 
     int T=1;
-    // cin >> T;
-    while (T--)
+    cin >> T;
+    for(int i = 1;i<=T;++i)
     {
+        // cout << "Case #" << i << ": ";
         solve();
     }
 }

@@ -6,8 +6,6 @@ using namespace std;
 #define all(c) c.begin(), c.end()
 #define endl "\n"
 
-#define inf 1e18
-
 void __print(int x) {cerr << x;}
 void __print(long x) {cerr << x;}
 void __print(unsigned x) {cerr << x;}
@@ -71,43 +69,26 @@ string bin(long n){
 
 void solve()
 {
+    int n, k;
+    cin >> n >> k;
     string s;
     cin >> s;
-    int n = s.size();
-    vector<vector<pair<int,int>>> adj(n+1);
+    set<char>st;
     for(int i = 0;i<n;++i){
-        adj[i].pb({1,i+1});
-        adj[i+1].pb({1,i});
+        char x;
+        cin >> x;
+        st.insert(x);
     }
-    
+    vector<int>dp(n);
     for(int i = 0;i<n;++i){
-        for(int j = i+1;j<n;++j){
-            if(s[i] == s[j]){
-                adj[i].pb({1, j});
-                adj[j].pb({1,i});
-            }
+        if(i == 0){
+            if(st.count(s[i]) == 1)dp[i] = 1;
+        }else{
+            if(st.count(s[i]) == 1)dp[i] = dp[i-1]+1;
+            else dp[i] = 0;
         }
     }
-    vector<bool>visited(n+1);
-    vector<int>costs(n+1, inf);
-    costs[0] = 0;
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
-    pq.push({0, 0});
-    while(!pq.empty()){
-        int u = pq.top().second;
-        pq.pop();
-        if(visited[u])continue;
-        visited[u] = 1;
-        for(auto v : adj[u]){
-            int curr_cost = costs[v.second];
-            int new_cost = costs[u]+v.first;
-            if(new_cost < curr_cost){
-                costs[v.second] = new_cost;
-                pq.push({new_cost, v.second});
-            }
-        }
-    }
-    cout << costs[n-1] << endl;
+    cout << accumulate(all(dp), 0LL) << endl;
 }   
 
 int32_t main()
@@ -124,8 +105,9 @@ int32_t main()
 
     int T=1;
     // cin >> T;
-    while (T--)
+    for(int i = 1;i<=T;++i)
     {
+        // cout << "Case #" << i << ": ";
         solve();
     }
 }

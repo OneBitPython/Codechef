@@ -6,8 +6,6 @@ using namespace std;
 #define all(c) c.begin(), c.end()
 #define endl "\n"
 
-#define inf 1e18
-
 void __print(int x) {cerr << x;}
 void __print(long x) {cerr << x;}
 void __print(unsigned x) {cerr << x;}
@@ -71,43 +69,80 @@ string bin(long n){
 
 void solve()
 {
-    string s;
-    cin >> s;
-    int n = s.size();
-    vector<vector<pair<int,int>>> adj(n+1);
+    int n;
+    cin >> n;
+    vector<int>a(n),b(n),c(n);
+    for(int &u :a)cin >> u;
+    for(int &u :b)cin >> u;
+    for(int &u :c)cin >> u;
+
+
+    int k1, k2;
+    cin >> k1 >> k2;
+    int res = 0;
+    vector<bool>taken(n);
     for(int i = 0;i<n;++i){
-        adj[i].pb({1,i+1});
-        adj[i+1].pb({1,i});
-    }
-    
-    for(int i = 0;i<n;++i){
-        for(int j = i+1;j<n;++j){
-            if(s[i] == s[j]){
-                adj[i].pb({1, j});
-                adj[j].pb({1,i});
-            }
+        if(c[i] >= b[i] && c[i] >= a[i]){
+            taken[i] = 1;
+            res+=c[i];
         }
     }
-    vector<bool>visited(n+1);
-    vector<int>costs(n+1, inf);
-    costs[0] = 0;
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
-    pq.push({0, 0});
-    while(!pq.empty()){
-        int u = pq.top().second;
-        pq.pop();
-        if(visited[u])continue;
-        visited[u] = 1;
-        for(auto v : adj[u]){
-            int curr_cost = costs[v.second];
-            int new_cost = costs[u]+v.first;
-            if(new_cost < curr_cost){
-                costs[v.second] = new_cost;
-                pq.push({new_cost, v.second});
+    vector<pair<int,int>> d, e;
+    for(int i = 0;i<n;++i){
+        d.pb({a[i], i});
+        e.pb({b[i], i});
+    }
+    sort(all(d), [&](auto one, auto two){
+        return one.first > two.first;
+    });
+    sort(all(e), [&](auto one, auto two){
+        return one.first > two.first;
+    });
+    if(k1 <= k2){
+        for(int i = 0;i<n;++i){
+            if(taken[d[i].second])continue;
+            if(k1 > 0){
+                if(d[i].first > b[d[i].second]){
+                    k1--;
+                    res+=d[i].first;
+                    taken[d[i].second] = 1;
+                }
             }
         }
+        for(int i = 0;i<n;++i){
+            if(taken[e[i].second])continue;
+            if(k2 > 0){
+                if(e[i].first > a[e[i].second]){
+                    k2--;
+                    res+=e[i].first;
+                    taken[e[i].second] = 1;
+                }
+            }
+        }
+    }else{
+        for(int i = 0;i<n;++i){
+            if(taken[e[i].second])continue;
+            if(k2 > 0){
+                if(e[i].first > a[e[i].second]){
+                    k2--;
+                    res+=e[i].first;
+                    taken[e[i].second] = 1;
+                }
+            }
+        }
+        for(int i = 0;i<n;++i){
+            if(taken[d[i].second])continue;
+            if(k1 > 0){
+                if(d[i].first > b[d[i].second]){
+                    k1--;
+                    res+=d[i].first;
+                    taken[d[i].second] = 1;
+                }
+            }
+        }
+        
     }
-    cout << costs[n-1] << endl;
+    cout << res << endl;
 }   
 
 int32_t main()
@@ -123,9 +158,10 @@ int32_t main()
     
 
     int T=1;
-    // cin >> T;
-    while (T--)
+    cin >> T;
+    for(int i = 1;i<=T;++i)
     {
+        // cout << "Case #" << i << ": ";
         solve();
     }
 }

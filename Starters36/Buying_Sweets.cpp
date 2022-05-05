@@ -6,8 +6,6 @@ using namespace std;
 #define all(c) c.begin(), c.end()
 #define endl "\n"
 
-#define inf 1e18
-
 void __print(int x) {cerr << x;}
 void __print(long x) {cerr << x;}
 void __print(unsigned x) {cerr << x;}
@@ -71,43 +69,40 @@ string bin(long n){
 
 void solve()
 {
-    string s;
-    cin >> s;
-    int n = s.size();
-    vector<vector<pair<int,int>>> adj(n+1);
+    int n,x;
+    cin >> n >> x;
+    vector<pair<int,int>> res;
+    vector<int>a(n),b(n);
+    for(int &u : a)cin >> u;
+    for(int &u :b)cin >> u;
     for(int i = 0;i<n;++i){
-        adj[i].pb({1,i+1});
-        adj[i+1].pb({1,i});
-    }
-    
-    for(int i = 0;i<n;++i){
-        for(int j = i+1;j<n;++j){
-            if(s[i] == s[j]){
-                adj[i].pb({1, j});
-                adj[j].pb({1,i});
-            }
+        if(a[i] <= x){
+            res.pb({a[i],b[i]});
         }
     }
-    vector<bool>visited(n+1);
-    vector<int>costs(n+1, inf);
-    costs[0] = 0;
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
-    pq.push({0, 0});
-    while(!pq.empty()){
-        int u = pq.top().second;
-        pq.pop();
-        if(visited[u])continue;
-        visited[u] = 1;
-        for(auto v : adj[u]){
-            int curr_cost = costs[v.second];
-            int new_cost = costs[u]+v.first;
-            if(new_cost < curr_cost){
-                costs[v.second] = new_cost;
-                pq.push({new_cost, v.second});
+    sort(all(res), [&](auto one, auto two){
+        return one.first-one.second < two.first - two.second;
+    });
+    int got = 0;
+    n = res.size();
+    // dbg(res);
+    for(int i = 0;i<n;++i){
+        int diff = res[i].first-res[i].second;
+        if(x >= res[i].first){
+
+        
+            int can = (x-res[i].first)/(diff);
+            got+=can;
+            x-=(can*(diff));
+            if(x >= res[i].first){
+                got+=1;
+                x-=diff;
             }
+            // dbg(can, x, res[i].first, res[i].second);
         }
+
     }
-    cout << costs[n-1] << endl;
+    cout << got << endl;
 }   
 
 int32_t main()
@@ -123,9 +118,10 @@ int32_t main()
     
 
     int T=1;
-    // cin >> T;
-    while (T--)
+    cin >> T;
+    for(int i = 1;i<=T;++i)
     {
+        // cout << "Case #" << i << ": ";
         solve();
     }
 }
